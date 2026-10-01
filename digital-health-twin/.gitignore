@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Node / frontend build
+frontend/node_modules/
+frontend/dist/
+
+# Runtime data (generated on first start)
+data/*.db
+data/*.db-*
+
+# Environment / secrets
+.env
+
+# Blender temporary files
+*.blend1
+*.blend@
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

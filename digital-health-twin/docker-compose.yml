@@ -1,0 +1,19 @@
+# Preferred demo command:  docker compose up --build
+# Then open http://localhost:8000
+services:
+  twin:
+    build: .
+    image: human-health-digital-twin:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DHT_DATABASE_URL: sqlite:////app/var/twin.db
+    volumes:
+      - twin-data:/app/var
+    restart: unless-stopped
+
+volumes:
+  twin-data:
