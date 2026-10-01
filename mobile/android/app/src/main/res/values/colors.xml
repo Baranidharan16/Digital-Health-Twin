@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ink">#1D2B36</color>
+    <color name="ink_soft">#5B6F7C</color>
+    <color name="porcelain">#EEF2F4</color>
+    <color name="signal">#0E7C7B</color>
+    <color name="alert">#B4363F</color>
+    <color name="heart">#E0636B</color>
+</resources>

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Node / frontend build
+frontend/node_modules/
+frontend/dist/
+
+# Runtime data (generated on first start)
+data/*.db
+data/*.db-*
+
+# Environment / secrets
+.env
+
+# Blender temporary files
+*.blend1
+*.blend@
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.cache/
+
+# Android build output and downloaded APKs
+downloads/
+mobile/android/.gradle/
+mobile/android/build/
+mobile/android/app/build/
+mobile/android/local.properties
+*.apk
+frontend/tsconfig.tsbuildinfo

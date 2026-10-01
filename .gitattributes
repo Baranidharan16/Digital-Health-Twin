@@ -1,0 +1,4 @@
+run.bat text eol=crlf
+*.sh text eol=lf
+*.glb binary
+*.wasm binary

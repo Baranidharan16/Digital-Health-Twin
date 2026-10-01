@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.HealthTwin" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/signal</item>
+        <item name="colorPrimaryDark">@color/ink</item>
+        <item name="colorAccent">@color/signal</item>
+        <item name="android:windowBackground">@color/porcelain</item>
+        <item name="android:statusBarColor">@color/ink</item>
+    </style>
+</resources>

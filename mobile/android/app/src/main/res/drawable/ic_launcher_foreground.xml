@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Same mark as the website: a figure with a red heart. 108dp adaptive-icon canvas. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#EEF2F4"
+        android:pathData="M54,30m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#EEF2F4"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:pathData="M40,80C40,63 45,51 54,51C63,51 68,63 68,80" />
+    <path
+        android:fillColor="#E0636B"
+        android:pathData="M58,58m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" />
+</vector>
