@@ -55,6 +55,7 @@ export function PhoneConnect({
   const [left, setLeft] = useState(0);
   const [devices, setDevices] = useState<PhoneDevice[]>([]);
   const [apk, setApk] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [justPaired, setJustPaired] = useState<PhoneDevice | null>(null);
   const known = useRef<Set<number> | null>(null);
@@ -92,7 +93,10 @@ export function PhoneConnect({
     load();
     fetch("/api/system/network")
       .then((r) => r.json())
-      .then((n) => setApk(Boolean(n.apk_available)))
+      .then((n) => {
+        setApk(Boolean(n.apk_available));
+        setIsPublic(Boolean(n.public));
+      })
       .catch(() => undefined);
     const id = window.setInterval(load, 4000);
     return () => {
@@ -251,10 +255,17 @@ export function PhoneConnect({
         </div>
 
         <ol className="phone__steps small">
-          <li>
-            Phone and computer on the <strong>same Wi-Fi</strong>. On Windows,
-            allow Python through the firewall when asked (Private networks).
-          </li>
+          {isPublic ? (
+            <li>
+              This website is online, so the phone can connect from{" "}
+              <strong>any network</strong> (Wi-Fi or mobile data).
+            </li>
+          ) : (
+            <li>
+              Phone and computer on the <strong>same Wi-Fi</strong>. On Windows,
+              allow Python through the firewall when asked (Private networks).
+            </li>
+          )}
           <li>
             Install the <strong>Health Twin</strong> app (Android 8+, with
             Health Connect).{" "}

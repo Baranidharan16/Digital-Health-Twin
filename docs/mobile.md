@@ -56,7 +56,7 @@ python scripts/fake_phone.py --code 123456                         # pair + 3 da
 python scripts/fake_phone.py --token <token> --live --scenario run # 1 new minute every 10 s
 ```
 
-`fake_phone.py` uses exactly the app's endpoints and JSON shape, with simulated readings, so the full path (pairing, token auth, baseline, incremental sync, WebSocket push) can be shown on a laptop alone. `tests/test_devices.py` covers the same path automatically (10 tests).
+`fake_phone.py` uses exactly the app's endpoints and JSON shape, with simulated readings, so the full path (pairing, token auth, baseline, incremental sync, WebSocket push) can be shown on a laptop alone. `tests/test_devices.py` covers the same path automatically (12 tests).
 
 ## API
 

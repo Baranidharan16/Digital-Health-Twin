@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ipaddress
 import os
 import socket
 from typing import Any
@@ -57,24 +58,48 @@ def _port(request: Request) -> int:
     return request.url.port or (443 if request.url.scheme == "https" else 80)
 
 
+def _is_private(host: str) -> bool:
+    try:
+        return ipaddress.ip_address(host).is_private
+    except ValueError:
+        return host in ("localhost",) or host.endswith(".local")
+
+
+def is_public(request: Request) -> bool:
+    """True when the website was opened through a public address (a deployment), not localhost or the LAN."""
+    host = request.url.hostname or ""
+    return bool(host) and not _is_private(host)
+
+
 def server_urls(request: Request) -> list[str]:
+    public = os.environ.get("DHT_PUBLIC_URL", "").strip().rstrip("/")
+    if public:  # set explicitly (Docker on a laptop, or a deployment)
+        return [public]
+    host = request.url.hostname or ""
+    if is_public(request):
+        # Deployed (Render, a VPS...): the address in the browser works for the phone too, from any network.
+        scheme = request.url.scheme
+        port = request.url.port
+        default = (scheme == "https" and port in (None, 443)) or (scheme == "http" and port in (None, 80))
+        return [f"{scheme}://{host}" if default else f"{scheme}://{host}:{port}"]
     port = _port(request)
     # In development the page is served by Vite (5173); the phone must talk to the API port.
     if port == 5173:
         port = 8000
     urls = [f"http://{ip}:{port}" for ip in lan_addresses()]
-    public = os.environ.get("DHT_PUBLIC_URL", "").strip().rstrip("/")
-    if public:  # e.g. in Docker, where the container cannot see the computer's Wi-Fi address
-        urls.insert(0, public)
-    host = request.url.hostname or ""
     if host and host not in ("localhost", "127.0.0.1") and not any(host in u for u in urls):
-        urls.insert(0, f"{request.url.scheme}://{host}:{port}")
+        urls.insert(0, f"http://{host}:{port}")
     return urls
 
 
 @router.get("/system/network", summary="Addresses a phone on the same Wi-Fi can use to reach this server")
 def network(request: Request) -> dict[str, Any]:
-    return {"server_urls": server_urls(request), "port": _port(request), "apk_available": apk_path() is not None}
+    return {
+        "server_urls": server_urls(request),
+        "port": _port(request),
+        "public": is_public(request) or bool(os.environ.get("DHT_PUBLIC_URL")),
+        "apk_available": apk_path() is not None,
+    }
 
 
 @router.get("/devices/app.apk", summary="Download the Android companion app, if it has been built")

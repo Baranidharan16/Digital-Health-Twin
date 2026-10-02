@@ -1452,3 +1452,19 @@ code,
     flex-direction: column;
   }
 }
+
+.crash,
+.phone-wait {
+  max-width: 820px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.crash__actions {
+  display: flex;
+  gap: 10px;
+}
+.phone-wait .btn,
+.crash__actions .btn {
+  align-self: flex-start;
+}

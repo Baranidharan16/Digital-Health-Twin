@@ -6,7 +6,8 @@ import { fmtNum } from "../lib/format";
 export function WellnessPanel({ state }: { state: TwinStatePayload | null }) {
   const [w, setW] = useState<Wellness | null>(null);
   useEffect(() => {
-    const load = () => api.wellness().then(setW).catch(() => undefined);
+    // A twin with no readings yet returns {}: treat it as no data.
+    const load = () => api.wellness().then((x) => setW(x && x.recovery_index ? x : null)).catch(() => undefined);
     load();
     const id = window.setInterval(load, 8000);
     return () => window.clearInterval(id);

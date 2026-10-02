@@ -119,7 +119,7 @@ Four defensible differentiators, each measurable:
 - **Wellness indicators** (labelled heuristics): steps vs usual, active minutes, sleep duration and quality, 1-minute heart-rate recovery after exercise, and a recovery index with itemised reasons.
 - **What-if simulation**: an exercise session (intensity, duration, optional short prior night) and a sleep-restriction scenario (hours × nights), compared with the person's normal.
 - **Ingestion adapters**: REST JSON, CSV upload (field aliases, °F→°C, SpO₂ fraction→%, epoch timestamps), simulator, and replay of a recorded session as the backup demo.
-- **OpenAPI docs** at `/docs`, a WebSocket push at `/ws/twin/{id}`, one-click `run.bat` / `run.sh`, Docker, 70 backend tests and 7 frontend tests, GitHub Actions CI.
+- **OpenAPI docs** at `/docs`, a WebSocket push at `/ws/twin/{id}`, one-click `run.bat` / `run.sh`, Docker, 72 backend tests and 7 frontend tests, GitHub Actions CI.
 
 ## 6. Architecture
 
@@ -334,6 +334,8 @@ Validation results are in [Key innovation](#4-key-innovation); method details ar
 
 > **Windows tip:** if Explorer extracted the zip into `digital-health-twin\digital-health-twin`, open the inner folder (the one containing `README.md`) before running anything.
 
+**Online (free):** deploy to Render from GitHub in a few clicks with the included `render.yaml`; the phone app then works from any network. See [docs/deploy.md](docs/deploy.md).
+
 **Option A: Docker** (needs Docker Desktop)
 
 ```bash
@@ -379,7 +381,7 @@ The full 3–5 minute script with talking points, and the **backup demo** (Syste
 ## 16. Testing
 
 ```bash
-pytest                          # 70 backend tests, ~25 s
+pytest                          # 72 backend tests, ~25 s
 cd frontend && npm test         # 7 frontend tests (data → 3D anatomy mapping)
 python -m digital_twin.evaluation   # validation report (JSON)
 ```

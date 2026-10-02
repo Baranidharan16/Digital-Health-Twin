@@ -4,7 +4,7 @@
 
 ```bash
 pip install -r requirements-dev.txt
-pytest                              # backend: 70 tests, about 25 s
+pytest                              # backend: 72 tests, about 25 s
 cd frontend && npm ci && npm test   # frontend: 7 tests
 python -m digital_twin.evaluation   # validation report
 ```
@@ -23,7 +23,7 @@ Every API test creates its own temporary SQLite database and seeds 3 days of his
 | `test_whatif.py` | 5 | Results labelled as simulation with assumptions; higher intensity gives a higher peak capped by max HR; deterministic; short sleep raises resting HR and slows recovery; no sleep deficit gives no effect |
 | `test_api.py` | 11 | Health; identity has no PII fields; state and vitals; every history range including custom (and an invalid custom range returns 400); baseline, events and wellness; ingestion 200/409/422 including rejection of unknown fields; CSV adapter; simulation endpoint and validation; live start, switch, stop and the WebSocket push; system info and OpenAPI; replay backup demo |
 | `test_import.py` | 8 | Real Fitbit export detected and merged (1-min grid, UTC conversion, no invented vitals, sleep minutes); cadence → intensity monotonic; generic CSV with optional SpO₂; Samsung Health heart-rate format with UTC offset; unknown or heart-rate-less files rejected; API creates a personal twin, refuses the live simulator on it, runs what-if, deletes it, and protects the demo twin |
-| `test_devices.py` | 10 | Phone pairing creates a twin and the code is single-use; wrong code, malformed code, bad and missing tokens rejected; first Health Connect sync learns a baseline and ingests ~2,900 minutes; incremental sync with overlap adds only new minutes, a repeat is `nothing_new`; too little history → `waiting_for_more_data`; no heart rate → `no_heart_rate`; heart-rate-and-steps-only phones leave SpO₂ unmeasured; the unfinished current minute is held back; revoke and twin deletion invalidate the token |
+| `test_devices.py` | 12 | Phone pairing creates a twin and the code is single-use; wrong code, malformed code, bad and missing tokens rejected; first Health Connect sync learns a baseline and ingests ~2,900 minutes; incremental sync with overlap adds only new minutes, a repeat is `nothing_new`; too little history → `waiting_for_more_data`; no heart rate → `no_heart_rate`; heart-rate-and-steps-only phones leave SpO₂ unmeasured; the unfinished current minute is held back; revoke and twin deletion invalidate the token |
 | `test_integration.py` | 2 | **End to end:** a seeded simulator stream is posted through the public REST endpoint; the twin goes HIGH_ACTIVITY → RECOVERY → ANOMALOUS in order; `/state` and `/events` return the anomaly with explanations. **Validation guard:** recall ≥ 0.7, ≤ 0.5 false alarms/day, fewer false alarms than population thresholds, baseline error < 2 bpm |
 | `frontend/src/lib/twinVisuals.test.ts` | 7 | Heart and lung rates follow live vitals; still at rest and active when running; lying down when asleep; each flagged vital lights its structure; unmeasured vitals are not animated; arterial colour darkens as SpO₂ falls; heartbeat waveform periodic |
 

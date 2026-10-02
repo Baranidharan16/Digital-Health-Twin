@@ -26,5 +26,6 @@ RUN mkdir -p /app/var && useradd --create-home twin && chown -R twin /app/var
 USER twin
 EXPOSE 8000
 HEALTHCHECK --interval=15s --timeout=3s --start-period=20s \
-  CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  CMD python -c "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:%s/api/health' % os.environ.get('PORT', '8000'))"
+# PORT is set by hosts such as Render; proxy headers make the app see https behind their load balancer.
+CMD ["sh", "-c", "exec uvicorn backend.app.main:app --host 0.0.0.0 --port ${PORT:-8000} --proxy-headers --forwarded-allow-ips '*'"]

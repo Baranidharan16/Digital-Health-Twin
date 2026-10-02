@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, setActiveTwin, TWIN_ID } from "./api/client";
 import type { TwinInfo } from "./api/types";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { LiveControls } from "./components/LiveControls";
+import { PhoneWaiting } from "./components/PhoneWaiting";
 import { PipelineStrip } from "./components/PipelineStrip";
 import { useLiveTwin } from "./hooks/useLiveTwin";
 import { fmtDateTime, setDisplayOffset, utcLabel } from "./lib/format";
@@ -76,6 +78,7 @@ export default function App() {
   // Every twin-scoped API call defaults to the selected twin.
   setActiveTwin(twinId);
   return (
+    <ErrorBoundary key={twinId} onReset={() => choose(TWIN_ID)}>
     <TwinApp
       key={twinId}
       twinId={twinId}
@@ -88,6 +91,7 @@ export default function App() {
       onTwinsChanged={refreshTwins}
       navigate={navigate}
     />
+    </ErrorBoundary>
   );
 }
 
@@ -131,6 +135,21 @@ function TwinApp({
       .then(setInfo)
       .catch(() => undefined);
   }, [phone, twinId, twin.state?.twin_time]);
+
+  // A paired phone with no readings yet: poll until the first sync lands.
+  const waiting = phone && !!info && info.observation_count === 0;
+  useEffect(() => {
+    if (!waiting) return;
+    const id = window.setInterval(() => {
+      api
+        .twin(twinId)
+        .then((t) => {
+          if (t.observation_count > 0) window.location.reload();
+        })
+        .catch(() => undefined);
+    }, 4000);
+    return () => window.clearInterval(id);
+  }, [waiting, twinId]);
 
   const recorded = !!info && !info.subject.is_synthetic;
   const freshness = twin.lastMessageAt
@@ -279,7 +298,10 @@ function TwinApp({
             then this page reconnects by itself.
           </section>
         )}
-        {page === "overview" && (
+        {waiting && page !== "mydata" && page !== "system" && (
+          <PhoneWaiting twinId={twinId} onBack={() => onChooseTwin(TWIN_ID)} />
+        )}
+        {!waiting && page === "overview" && (
           <>
             <PipelineStrip
               state={twin.state}
@@ -292,12 +314,12 @@ function TwinApp({
             <Overview twin={twin} recorded={recorded} />
           </>
         )}
-        {page === "twin" && <TwinPage twin={twin} twinId={twinId} />}
-        {page === "history" && <HistoryPage version={version} />}
-        {page === "analytics" && (
+        {!waiting && page === "twin" && <TwinPage twin={twin} twinId={twinId} />}
+        {!waiting && page === "history" && <HistoryPage version={version} />}
+        {!waiting && page === "analytics" && (
           <AnalyticsPage version={version.slice(0, 15)} />
         )}
-        {page === "simulation" && <SimulationPage />}
+        {!waiting && page === "simulation" && <SimulationPage />}
         {page === "mydata" && (
           <MyDataPage
             onOpenTwin={onChooseTwin}

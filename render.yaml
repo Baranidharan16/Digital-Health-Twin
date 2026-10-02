@@ -1,0 +1,13 @@
+# Render blueprint: free web service built from the Dockerfile.
+# Render dashboard → New → Blueprint → pick this repository → Apply.
+services:
+  - type: web
+    name: digital-health-twin
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DHT_HISTORY_DAYS
+        value: "7"

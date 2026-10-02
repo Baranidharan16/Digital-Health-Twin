@@ -140,3 +140,20 @@ def test_window_end_drops_unfinished_minute(client, phone_history):
     assert out["status"] == "synced"
     twin = [t for t in client.get("/api/twins").json() if t["id"] == paired["twin_id"]][0]
     assert twin["last_observation_at"] < (hist[-1].timestamp.replace(second=0)).isoformat()
+
+
+def test_deployed_site_gives_its_own_https_address(client):
+    r = client.get("https://twin.example.com/api/system/network")
+    body = r.json()
+    assert body["server_urls"] == ["https://twin.example.com"] and body["public"] is True
+    p = client.post("https://twin.example.com/api/devices/pairing", json={"display_name": "x"}).json()
+    assert p["deep_link"].startswith("healthtwin://pair?server=https://twin.example.com&code=")
+
+
+def test_empty_phone_twin_is_safe_to_open(client):
+    paired = _pair(client)
+    tid = paired["twin_id"]
+    assert client.get(f"/api/twin/{tid}").json()["observation_count"] == 0
+    assert client.get(f"/api/twin/{tid}/state").status_code == 409
+    assert client.get(f"/api/twin/{tid}/events").status_code == 200
+    assert client.get(f"/api/twin/{tid}/history?range=24h").status_code == 200

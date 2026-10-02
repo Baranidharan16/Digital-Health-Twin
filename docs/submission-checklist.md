@@ -7,7 +7,7 @@ The problem statement provided says: *"Build your Digital Twin proof-of-concept 
 | Explicit requirement | Mandatory? | How this repo meets it | Status |
 |---|---|---|---|
 | A Digital Twin proof-of-concept | Yes | Live twin with state engine, sync loop, analytics, simulation and 3D body | ✅ |
-| Completed project | Yes | Runs end to end; 70 + 7 tests pass | ✅ |
+| Completed project | Yes | Runs end to end; 72 + 7 tests pass | ✅ |
 | Submitted as a GitHub repository | Yes | Clean repo structure; `.gitignore` excludes builds, venvs, DB, `.env` | ⬜ push to GitHub |
 | Required documentation "as specified in the submission guidelines" | Yes | README (22 sections) + `docs/` | ⚠️ **check against the official guidelines document**, which was not available while building |
 | Evaluated by a technical and expert panel | — | Measured validation, explained methods, honest limitations | ✅ |
@@ -30,7 +30,7 @@ Anything beyond these lines (video, slides, deadline, repository naming, team de
 
 ## 3. Testing checklist
 
-- [x] `pytest` → 70 passed
+- [x] `pytest` → 72 passed
 - [x] `npm test` → 7 passed
 - [x] `npm run build` → typecheck + production build OK
 - [x] Integration test: simulated stream → REST ingestion → twin → states → API
@@ -100,7 +100,7 @@ digital-health-twin/
 ├── scripts/{record_demo.py,sample_wearable_export.csv}
 ├── mobile/android/                  Health Twin app (Kotlin, Health Connect)
 ├── .github/workflows/               tests + Android APK build
-├── tests/                           70 pytest tests
+├── tests/                           72 pytest tests
 ├── docs/  screenshots/
 ├── Dockerfile  docker-compose.yml  .env.example  .gitignore  LICENSE  README.md
 ├── requirements-dev.txt  backend/requirements.txt  pytest.ini
@@ -153,7 +153,7 @@ Real-data pilot → per-person time-constant learning → multi-signal and trend
 | Simulation | Personal calibration, reference comparison, state sequence, assumptions shown | Sleep coefficients illustrative | Cite literature ranges or fit to data |
 | 3D visualisation | Scan-based anatomy (19 structures from about 1,050 parts); only data-backed structures animate; organ cards say what is monitored | Single male reference body; side-lying sleep pose; 9 MB model | Lighter LOD for phones (`--quality 0.5`) |
 | UX | 30-second story strip, explanations everywhere, mobile layout | Dense on small laptops | Zoom to 90% for demos |
-| Testing | 70 + 7 tests including integration, real-data import and a validation guard | No browser E2E in CI | Add one Playwright smoke test |
+| Testing | 72 + 7 tests including integration, real-data import and a validation guard | No browser E2E in CI | Add one Playwright smoke test |
 | Documentation | README 22 sections + 7 docs + diagrams | Team section must be completed | — |
 | Reproducibility | Seeds, Docker, clean-env pip install verified | Docker build untested in sandbox | Build once locally |
 | Privacy | Synthetic, pseudonymous, forbid extra fields | No authentication (documented) | — |

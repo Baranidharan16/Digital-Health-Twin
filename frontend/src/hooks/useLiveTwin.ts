@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { api, TWIN_ID } from "../api/client";
+import { api, ApiError, TWIN_ID } from "../api/client";
 import type { LiveStatus, TwinEvent, TwinStatePayload } from "../api/types";
 
 export type Connection = "connecting" | "live" | "offline";
@@ -94,7 +94,11 @@ export function useLiveTwin(twinId = TWIN_ID): LiveTwin {
     };
 
     // Prime the buffer with recent readings so the strip chart is not empty.
-    api.state(twinId).then(accept).catch(() => setConnection("offline"));
+    api
+      .state(twinId)
+      .then(accept)
+      // A 409/404 means the twin has no readings yet (e.g. a phone before its first sync), not that the server is down.
+      .catch((err) => setConnection((c) => (err instanceof ApiError ? c : "offline")));
     api.liveStatus().then(setLive).catch(() => undefined);
     refreshEvents();
     connect();
