@@ -7,6 +7,9 @@ on:
     paths: ["mobile/android/**"]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -30,3 +33,13 @@ jobs:
         with:
           name: health-twin-apk
           path: mobile/android/health-twin.apk
+      - name: Publish the APK as a public release (main branch only)
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete app-latest --yes --cleanup-tag || true
+          gh release create app-latest health-twin.apk \
+            --title "Health Twin Android app (latest build)" \
+            --notes "Install on Android 8+ with Health Connect. Built automatically from commit ${GITHUB_SHA::7}. See docs/mobile.md." \
+            --target "$GITHUB_SHA"

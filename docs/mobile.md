@@ -39,7 +39,7 @@ If there is too little history yet, the server answers `waiting_for_more_data` a
    On Windows, allow Python through the firewall for **Private networks** when asked. If you missed the prompt: Windows Security → Firewall → Allow an app → Python → Private.
 2. **Phone and computer on the same Wi-Fi.** Some guest, office and college networks block device-to-device traffic. If so, use the phone's hotspot and connect the laptop to it.
 3. **Install the app** (Android 8.0+). On Android 13 and older, also install **Health Connect** from the Play Store; on Android 14+ it is built in.
-   - From GitHub: every push builds the APK (**Actions → Android app → latest run → Artifacts → health-twin-apk**). Unzip it, copy `health-twin.apk` to the phone, open it, and allow "install unknown apps" for your file manager.
+   - Download: **[health-twin.apk](https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk)** (GitHub Actions rebuilds and republishes it whenever the app changes). Open it on the phone and allow "install unknown apps" for your browser or file manager.
    - From Android Studio: **Open** `mobile/android`, wait for the Gradle sync, plug in the phone with USB debugging on, press **Run**.
    - Tip: copy the APK to `downloads/health-twin.apk` in this repo. The website then shows a QR code to download it straight from your laptop.
 4. **Pair.** Website → **My data → Connect your Android phone → Show pairing code**. In the app tap **Scan QR code** and point it at the screen (or type the address and code). Codes are valid for 10 minutes and can be used once.

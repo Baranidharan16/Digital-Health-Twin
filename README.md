@@ -16,8 +16,171 @@ It runs on two kinds of data, through the same engine:
 
 ---
 
+## Submission information
+
+Everything the Happiest Health submission form asks for is in this section, in the same order as the form.
+
+| Required item | Where |
+|---|---|
+| Team details | [Team details](#team-details) |
+| College / incubator information | [College / incubator information](#college--incubator-information) |
+| Project title | [Project title](#project-title) |
+| Problem statement | [Problem statement (summary)](#problem-statement-summary), in full in [§2](#2-problem-statement) |
+| Healthcare use case | [Healthcare use case](#healthcare-use-case) |
+| Technical stack | [Technical stack (summary)](#technical-stack-summary), in full in [§8](#8-technology-stack) |
+| AI/ML model or framework details | [AI/ML model and framework details](#aiml-model-and-framework-details) |
+| 15–20 minute demo video (unlisted YouTube) | [Demo video](#demo-video) |
+| Open-source licence details | [Open-source licence details](#open-source-licence-details) |
+| Architecture diagram (PDF) | [docs/submission/architecture-diagram.pdf](docs/submission/architecture-diagram.pdf) |
+| Presentation (PDF) | [docs/submission/presentation.pdf](docs/submission/presentation.pdf) |
+| Public access | [Public access](#public-access) |
+
+### Team details
+
+| Role | Name | Department / year | Email | GitHub |
+|---|---|---|---|---|
+| Team lead | [Team lead name] | [Dept, year] | [email] | [@Baranidharan16](https://github.com/Baranidharan16) |
+| Member | [Member 2 name] | [Dept, year] | [email] | [GitHub] |
+| Member | [Member 3 name] | [Dept, year] | [email] | [GitHub] |
+
+**Team name:** [Team name]
+
+Contributions of each member are listed in [§22](#22-team-contributions).
+
+### College / incubator information
+
+| | |
+|---|---|
+| College / incubator | [College / incubator name] |
+| Department | [Department] |
+| City, State | [City, State] |
+| Faculty mentor (if any) | [Mentor name or 'None'] |
+
+### Project title
+
+**Human Health Digital Twin: a personal, explainable digital twin of human physiology with an interactive 3D anatomical body, live phone/smartwatch data and what-if simulation.**
+
+### Problem statement (summary)
+
+Wearables already measure heart rate, SpO₂, temperature, breathing, movement and sleep continuously, but most apps judge every person against the same population thresholds. That raises **false alarms during normal activity** (150 bpm while running) and **misses changes that are large for one person** (a resting heart rate of 85 bpm is "normal", yet it is a 29% rise for someone whose own resting rate is 66). There is no living **model of the individual** that knows their normal, understands context, explains what changed, and can answer "what if?". This project builds that model: a digital twin of one person, kept in sync with their data. Full statement in [§2](#2-problem-statement).
+
+### Healthcare use case
+
+**Primary use case: personal preventive wellness monitoring.** A person wears any smartwatch or simply carries an Android phone. The Health Twin app syncs their data (through Android Health Connect) to their twin. The twin learns *their* normal resting heart rate, breathing, SpO₂, temperature, activity and sleep, and then:
+
+1. **Flags unusual changes early and explains them.** For example: *"Resting heart rate 88 bpm is 24% above the 71 bpm expected for you at rest, for 4 consecutive readings."* A sustained rise like this can come with poor recovery, overtraining, stress, dehydration or the start of an illness, so the person knows to rest, re-check, or talk to a doctor.
+2. **Avoids false alarms** during exercise and sleep, because expectations follow what the person is doing.
+3. **Shows the body, not just numbers.** On the 3D anatomical twin the heart beats at the live heart rate, the lungs breathe at the live breathing rate, and the organ behind a flagged vital lights up. This makes the data understandable for people without medical training.
+4. **Answers "what if?".** For example, *"How long will I take to recover from a 30-minute run after a 5-hour night?"* The answer comes from the person's own calibrated model.
+
+**Other healthcare scenarios the same twin supports:**
+
+| Who | Scenario | How the twin helps |
+|---|---|---|
+| Family caregivers | An elderly parent living alone wears a watch | Their phone syncs to the twin; the family sees "stable / sleeping / unusual for her" with a plain-language reason, instead of raw numbers |
+| Fitness and recovery | Training plans, return to exercise | Recovery state, 1-minute heart-rate recovery, sleep-restriction what-ifs |
+| Clinics and health programmes (future, after validation) | Pre-visit or remote-programme review | A summary of the person's trends, flagged episodes and time in each state, rather than isolated readings |
+| Researchers | Wearable-data studies | Imports Fitbit / Samsung Health / Google Fit exports, with reproducible baselines and validation metrics |
+
+**Boundaries.** This is a wellness and research prototype, **not a medical device**. States and flags describe the data; they are not diagnoses, and the twin does not give treatment advice. Medical use would need clinical validation and regulatory approval (see [§18 Limitations](#18-limitations) and [§19 Privacy](#19-privacy-considerations)).
+
+### Technical stack (summary)
+
+| Layer | Technology |
+|---|---|
+| Twin engine and analytics | Python 3.11+, NumPy, pandas |
+| Backend API | FastAPI, Pydantic v2, SQLAlchemy 2, SQLite, WebSocket (uvicorn) |
+| Web frontend | React 19, TypeScript, Vite, Recharts |
+| 3D twin | Three.js via React Three Fiber and drei; anatomy built with Blender (Python) from BodyParts3D scan data |
+| Mobile app | Android, Kotlin, Android Health Connect (`connect-client`), ZXing QR scanner |
+| Testing and CI | pytest (72 tests), Vitest (7 tests), GitHub Actions (tests + Android APK build) |
+| Deployment | Docker (single container), Render free web service (`render.yaml`), one-click `run.bat` / `run.sh` |
+
+Reasons for each choice are in [§8](#8-technology-stack).
+
+### AI/ML model and framework details
+
+**Approach.** The twin is a **hybrid digital-twin model**. It combines a mechanistic physiology model with person-specific statistical learning and an explainable, rule-based decision layer. We chose this over deep learning on purpose. There is no large labelled real-world dataset of personal anomalies, health decisions must be explainable, and a small interpretable model can be **measured** against ground truth. All modelling code is in [`digital_twin/`](digital_twin) and uses **NumPy and pandas**. No TensorFlow or PyTorch is needed.
+
+| Component | Method | Learned from / parameters | Code |
+|---|---|---|---|
+| **Personal baseline** (learning) | Robust statistics: median and MAD × 1.4826 per vital, separately for rest and sleep; flagged periods are excluded; minimum spreads stop a very quiet history from over-flagging | The person's last 7 days (at least 12 resting readings); re-learned on demand | `baseline.py` |
+| **Physiology / context model** | Heart rate expected for an activity intensity: HR = HR_rest + intensity × (HR_max − HR_rest), with HR_max = 208 − 0.7 × age (Tanaka). First-order filters (effective, lagging and slow intensity) model how the body lags behind effort, giving an *expected band* per vital | Personal baseline + age | `physiology.py`, `engine.py` |
+| **Activity estimation** | Step cadence → activity intensity (when the device gives no intensity) | Steps per minute | `backend/app/importers.py` |
+| **Anomaly detection** | Robust z-score of each reading against its expected band, with a direction per vital (HR, breathing: high; SpO₂: low; temperature: both), minimum absolute and % change, **persistence** (flag after 4 consecutive readings) and **hysteresis** (clear after 3); population reference ranges as a secondary check | z ≥ 3.5 to flag, 2.5–3.0 to watch | `anomaly.py` |
+| **State estimation** | Deterministic priority state machine (Anomalous → Elevated → Sleeping → High activity → Active → Recovery → Stable) with 2-reading confirmation; every transition is stored with its reason | — | `state_engine.py` |
+| **What-if simulation** | The same physiology model integrated forward (asymmetric heart-rate time constants, breathing, SpO₂, temperature dynamics) and calibrated to the person's baseline; the simulated future is classified by the same state engine | Personal baseline; scenario inputs | `whatif.py`, `simulator/` |
+| **Evaluation** | Injected-anomaly ground truth on 35 unseen synthetic days (30 episodes): recall, false alarms per day and time to flag, compared with population thresholds | — | `evaluation.py` |
+
+**Results:**
+
+| Detector | Episodes caught | False alarms per day |
+|---|---|---|
+| Personal twin | **77%** | **0.0** |
+| Population thresholds | 43% | 4.6 |
+
+The learned resting heart rate is within 0.53 bpm of the simulator's true value. This is validated against our own simulator, not clinically; reproduce it with `python -m digital_twin.evaluation`.
+
+**Data used:**
+- a seeded physiology simulator (synthetic person);
+- a real public Fitbit dataset (Furberg et al., 2016, CC0);
+- the user's own data, through file import or the Android app.
+
+**Next ML steps (once consented real data is available):**
+- learn each person's time constants and heart-rate/intensity curve by regression;
+- multivariate anomaly scoring (for example Isolation Forest or a CUSUM trend detector) for slow drifts;
+- HRV-based recovery indicators.
+
+### Demo video
+
+**15–20 minute demo (unlisted YouTube):** [Add the unlisted YouTube link here]
+
+The recording script is in [docs/demo-video-script.md](docs/demo-video-script.md).
+
+### Open-source licence details
+
+- **Project source code:** [MIT License](LICENSE). You may use, modify and redistribute it with attribution.
+- **3D anatomy model** (`frontend/public/models/anatomy_twin.glb`): derived from BodyParts3D, © The Database Center for Life Science, licensed under **CC BY-SA 2.1 Japan**. The derived model is shared under the same licence.
+- **Real wearable sample** (`data/sample_real/`): Fitbit dataset by Furberg et al. (2016), doi:10.5281/zenodo.53894, **CC0 1.0** (public domain).
+- **Main third-party libraries:** all are open source, with their own licences.
+
+| Licence | Libraries |
+|---|---|
+| MIT | FastAPI, Pydantic, SQLAlchemy, React, Three.js, React Three Fiber, drei, Recharts, Vite, qrcode |
+| BSD-3-Clause | NumPy, pandas, uvicorn |
+| Apache-2.0 | Android Health Connect client, AndroidX, Kotlin, ZXing Android Embedded |
+| SIL Open Font License | Instrument Sans font |
+
+Full credits are at the end of this README.
+
+### Architecture diagram
+
+![System architecture](docs/submission/architecture-diagram.png)
+
+PDF version: [docs/submission/architecture-diagram.pdf](docs/submission/architecture-diagram.pdf). Detailed diagrams (component, sequence, data model, state machine) are in [§6](#6-architecture) and [docs/architecture.md](docs/architecture.md).
+
+### Presentation
+
+[docs/submission/presentation.pdf](docs/submission/presentation.pdf) has 15 slides covering the problem, approach, architecture, 3D twin, explainable anomaly detection, measured results, what-if simulation, real data, the phone connection, engineering, outcomes, limitations and roadmap.
+
+### Public access
+
+All of these are publicly accessible without any sign-in or permission request:
+- this repository;
+- the documents in [`docs/submission/`](docs/submission);
+- the screenshots;
+- the demo video (unlisted YouTube: anyone with the link can watch);
+- the Android app: [download health-twin.apk](https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk), published by GitHub Actions on every change to the app.
+
+The app can also be built from [`mobile/android`](mobile/android).
+
+**Live website:** [Render URL] (free hosting; the first visit after a quiet period takes about a minute to wake up).
+
+---
+
 ## Contents
 
+0. [Submission information](#submission-information)
 1. [Project overview](#1-project-overview)
 2. [Problem statement](#2-problem-statement)
 3. [Why a digital twin](#3-why-a-digital-twin)
@@ -464,19 +627,19 @@ Each phase reuses the existing validation, engine, storage, UI and tests unchang
 
 ## 22. Team contributions
 
-> Fill this in before submission.
+Team and college details are in [Submission information](#team-details).
 
-| Member | Role | Contributions |
-|---|---|---|
-| _Name_ | _e.g. backend and engine_ | _…_ |
-| _Name_ | _e.g. frontend and 3D (Blender)_ | _…_ |
-| _Name_ | _e.g. testing, docs, demo_ | _…_ |
+| Member | Contributions |
+|---|---|
+| [Team lead name] | [What they built] |
+| [Member 2 name] | [What they built] |
+| [Member 3 name] | [What they built] |
 
 AI assistance: parts of this project were developed with an AI assistant (Claude). All code was reviewed, run and tested by the team.
 
 ---
 
-License: MIT (see [LICENSE](LICENSE)).
+License: MIT (see [LICENSE](LICENSE)); third-party licences are listed in [Open-source licence details](#open-source-licence-details). This software is a research and demonstration prototype, not a medical device, and must not be used for diagnosis or treatment.
 
 ### Credits and data licences
 

@@ -284,8 +284,15 @@ export function PhoneConnect({
               </>
             ) : (
               <>
-                Get the APK from the GitHub build (Actions → Android app →
-                artifact) or build it in Android Studio; see docs/mobile.md.
+                Download it on the phone:{" "}
+                <a
+                  href="https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  health-twin.apk
+                </a>{" "}
+                (or build it in Android Studio; see docs/mobile.md).
               </>
             )}
           </li>
