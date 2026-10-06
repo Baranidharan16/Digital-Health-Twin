@@ -21,6 +21,8 @@ COPY simulator/ simulator/
 COPY scripts/ scripts/
 COPY data/demo_recording.jsonl data/demo_recording.jsonl
 COPY data/sample_real/ data/sample_real/
+# The Android app, so the website can offer it for download (QR code on My data).
+COPY downloads/ downloads/
 COPY --from=frontend /src/frontend/dist frontend/dist
 RUN mkdir -p /app/var && useradd --create-home twin && chown -R twin /app/var
 USER twin

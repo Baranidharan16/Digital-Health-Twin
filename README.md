@@ -12,6 +12,8 @@ It runs on two kinds of data, through the same engine:
 
 ![Overview during an anomaly](screenshots/03-overview-anomaly.png)
 
+**Live demo:** <https://digital-health-twin-085j.onrender.com> · **Android app:** [health-twin.apk](https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk) · **Team:** Torque Titans, R.M.K. Engineering College
+
 **Quick start (Windows):** double-click **`run.bat`**. **macOS/Linux:** `./run.sh`. The browser opens <http://localhost:8000>; press **Run guided demo**, or open **My data → Load real Fitbit sample**, or **My data → Connect your Android phone**. You need Python 3.11+; Node.js is only needed if `frontend/dist` is missing. Docker and manual setup are [below](#13-installation).
 
 ---
@@ -37,24 +39,25 @@ Everything the Happiest Health submission form asks for is in this section, in t
 
 ### Team details
 
-| Role | Name | Department / year | Email | GitHub |
-|---|---|---|---|---|
-| Team lead | [Team lead name] | [Dept, year] | [email] | [@Baranidharan16](https://github.com/Baranidharan16) |
-| Member | [Member 2 name] | [Dept, year] | [email] | [GitHub] |
-| Member | [Member 3 name] | [Dept, year] | [email] | [GitHub] |
+**Team name: Torque Titans**
 
-**Team name:** [Team name]
+| # | Name | Department | Year | Email |
+|---|---|---|---|---|
+| 1 | **B. Barani Dharan** (team lead, [@Baranidharan16](https://github.com/Baranidharan16)) | Electronics and Communication Engineering (ECE) | Third year | 240741.ec@rmkec.ac.in |
+| 2 | **M. Jai Vignesh** | Electronics and Communication Engineering (ECE) | Third year | 240135.ec@rmkec.ac.in |
+| 3 | **K.S. Hari Haran** | Electronics and Communication Engineering (ECE) | Third year | 241175.ec@rmkec.ac.in |
+| 4 | **P. Mohan** | Electronics and Communication Engineering (ECE) | Third year | 241431.ec@rmkec.ac.in |
 
 Contributions of each member are listed in [§22](#22-team-contributions).
 
 ### College / incubator information
 
 | | |
-|---|---|
-| College / incubator | [College / incubator name] |
-| Department | [Department] |
-| City, State | [City, State] |
-| Faculty mentor (if any) | [Mentor name or 'None'] |
+| --- | --- |
+| College | R.M.K. Engineering College |
+| Department | Electronics and Communication Engineering (ECE) |
+| Location | Kavaraipettai, Tiruvallur District, Tamil Nadu, India |
+| Team | Torque Titans (4 third-year ECE students) |
 
 ### Project title
 
@@ -170,11 +173,11 @@ All of these are publicly accessible without any sign-in or permission request:
 - the documents in [`docs/submission/`](docs/submission);
 - the screenshots;
 - the demo video (unlisted YouTube: anyone with the link can watch);
-- the Android app: [download health-twin.apk](https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk), published by GitHub Actions on every change to the app.
+- the Android app: [download health-twin.apk](https://github.com/Baranidharan16/Digital-Health-Twin/releases/download/app-latest/health-twin.apk) (public release), also in the repository at [`downloads/health-twin.apk`](downloads/health-twin.apk) and offered as a QR code on the live website's **My data** page.
 
 The app can also be built from [`mobile/android`](mobile/android).
 
-**Live website:** [Render URL] (free hosting; the first visit after a quiet period takes about a minute to wake up).
+**Live website:** [https://digital-health-twin-085j.onrender.com](https://digital-health-twin-085j.onrender.com/) (free hosting: the first visit after a quiet period takes about a minute to wake up).
 
 ---
 
@@ -627,13 +630,7 @@ Each phase reuses the existing validation, engine, storage, UI and tests unchang
 
 ## 22. Team contributions
 
-Team and college details are in [Submission information](#team-details).
-
-| Member | Contributions |
-|---|---|
-| [Team lead name] | [What they built] |
-| [Member 2 name] | [What they built] |
-| [Member 3 name] | [What they built] |
+**Torque Titans**, R.M.K. Engineering College (ECE, third year): B. Barani Dharan (team lead), M. Jai Vignesh, K.S. Hari Haran, P. Mohan. Contact details are in [Team details](#team-details).
 
 AI assistance: parts of this project were developed with an AI assistant (Claude). All code was reviewed, run and tested by the team.
 

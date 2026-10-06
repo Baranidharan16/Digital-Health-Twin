@@ -29,10 +29,12 @@ Thumbs.db
 .cache/
 
 # Android build output and downloaded APKs
-downloads/
+downloads/*
+!downloads/health-twin.apk
 mobile/android/.gradle/
 mobile/android/build/
 mobile/android/app/build/
 mobile/android/local.properties
 *.apk
+!downloads/health-twin.apk
 frontend/tsconfig.tsbuildinfo
